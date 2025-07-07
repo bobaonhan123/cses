@@ -1,4 +1,4 @@
-// https://cses.fi/problemset/task/3221
+//https://cses.fi/problemset/task/3426
 
 use std::io::{self, BufRead, Write, BufWriter};
 use std::collections::{VecDeque, HashMap, HashSet, BinaryHeap, BTreeMap};
@@ -50,34 +50,17 @@ fn main() {
     for i in 1..n {
         arr[i] = (a*arr[i-1]+b)%c;
     }
-    let mut res=0;
-    let mut dq: VecDeque<(usize, usize)> = VecDeque::new(); // value and index
     for i in 0..k {
-        // if dq.is_empty() || arr[i] < dq.back().unwrap().0 {
-        //     dq.push_back((arr[i], i));
-        // }
-        while !dq.is_empty() && arr[i]<dq.back().unwrap().0 {
-            dq.pop_back();
-        }
-        dq.push_back((arr[i], i));
+        res^=arr[i];
     }
-    res ^= dq.front().unwrap().0;
+    rres=res;
     for i in 1..=n-k {
-        while let Some(&(val, idx)) = dq.front() {
-            if idx < i {
-                dq.pop_front();
-            } else {
-                break;
-            }
-        }
-
-        while !dq.is_empty() && arr[i+k-1]<dq.back().unwrap().0 {
-            dq.pop_back();
-        }
-        dq.push_back((arr[i+k-1], i+k-1));
-        res ^= dq.front().unwrap().0;
+        res^=arr[i-1];
+        res^=arr[i+k-1];
+        rres^=res;
     }
 
-    writeln!(out, "{}", res).unwrap();
+
+    writeln!(out, "{}", rres).unwrap();
     out.flush().unwrap();
 }

@@ -1,4 +1,4 @@
-// https://cses.fi/problemset/task/3221
+//https://cses.fi/problemset/task/3222
 
 use std::io::{self, BufRead, Write, BufWriter};
 use std::collections::{VecDeque, HashMap, HashSet, BinaryHeap, BTreeMap};
@@ -36,48 +36,40 @@ fn main() {
     let mut next = || lines.next().unwrap().unwrap();
 
     let (n,k): (usize, usize) = read_tuple!(next, usize, usize);
-    // let arr: Vec<i32> = read_vec!(next, i32);
-    let (x, a, b,c ): (usize, usize,usize, usize) = read_tuple!(next,usize, usize,usize, usize);
 
     let stdout = io::stdout();
     let mut out = BufWriter::new(stdout.lock());
 
     // Your solution logic here
-    let mut arr: Vec<usize> = vec![0; n];
-    let mut res:usize = 0;
-    let mut rres:usize=0;
-    arr[0]=x;
-    for i in 1..n {
-        arr[i] = (a*arr[i-1]+b)%c;
-    }
+    let mut arr: Vec<usize> = read_vec!(next, usize);
+    let mut bmap: BTreeMap<usize, usize> = BTreeMap::new();
     let mut res=0;
-    let mut dq: VecDeque<(usize, usize)> = VecDeque::new(); // value and index
     for i in 0..k {
-        // if dq.is_empty() || arr[i] < dq.back().unwrap().0 {
-        //     dq.push_back((arr[i], i));
-        // }
-        while !dq.is_empty() && arr[i]<dq.back().unwrap().0 {
-            dq.pop_back();
+        let count = bmap.get(&arr[i]).cloned().unwrap_or(0);
+        if count == 0 {
+            res += 1;
         }
-        dq.push_back((arr[i], i));
+        bmap.insert(arr[i], count + 1);
     }
-    res ^= dq.front().unwrap().0;
+    write!(out, "{} ", res).unwrap();
     for i in 1..=n-k {
-        while let Some(&(val, idx)) = dq.front() {
-            if idx < i {
-                dq.pop_front();
-            } else {
-                break;
-            }
+        let pr = arr[i - 1];
+        let next_elem = arr[i + k - 1];
+        let prcnt = bmap.get(&pr).cloned().unwrap_or(0);
+        if prcnt == 1 {
+            res -= 1;
+            bmap.remove(&pr);
+        } else {
+            bmap.insert(pr, prcnt - 1);
         }
-
-        while !dq.is_empty() && arr[i+k-1]<dq.back().unwrap().0 {
-            dq.pop_back();
+        let necnt = bmap.get(&next_elem).cloned().unwrap_or(0);
+        if necnt == 0 {
+            res += 1;
         }
-        dq.push_back((arr[i+k-1], i+k-1));
-        res ^= dq.front().unwrap().0;
+        bmap.insert(next_elem, necnt + 1);
+        write!(out, "{} ", res).unwrap();
     }
 
-    writeln!(out, "{}", res).unwrap();
+    // writeln!(out, "{}", rres).unwrap();
     out.flush().unwrap();
 }
