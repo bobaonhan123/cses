@@ -19,6 +19,8 @@ bool isValid(int x, int y) {
     return x >= 0 && x <= 6 && y >= 0 && y <= 6 && !vi[x][y];
 }
 
+
+
 bool isTrapped(int x, int y) {
     bool up = (x > 0 && !vi[x - 1][y]);
     bool down = (x < 6 && !vi[x + 1][y]);
@@ -35,11 +37,10 @@ void dq(int step) {
         if (x == 6 && y == 0) res++;
         return;
     }
+    if (x == 6 && y == 0) return;
     if (step >= 48) return;
+    if (!isValid(x,y)) return;
     if (isTrapped(x, y)) return;
-    if (!isValid(x, y)) {
-        return;
-    }
     if (x == 6 && y == 0 && step != 48) return;
     vi[x][y] = true;
 
@@ -97,11 +98,11 @@ void dq(int step) {
 
 int main() {
 
+    fast;
     di['L'] = { 0, -1 };
     di['R'] = { 0, 1 };
     di['D'] = { 1, 0 };
     di['U'] = { -1, 0 };
-    fast;
     cin >> input;
     dq(0);
     cout << res;
