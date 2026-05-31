@@ -26,7 +26,9 @@ int main() {
     sort(a.begin(),a.end());
     int res = hammingDistance(a[0],a[1]);
     for (int i = 0; i < n-1; i++) {
-        res = min(res,hammingDistance(a[i],a[i+1]));
+        for (int j = i+1; j < n; j++) {
+            res = min(res,hammingDistance(a[i],a[j]));   
+        }
     }
 
     cout<<res;
